@@ -28,5 +28,4 @@ jobs:
     - run: |
         cd Backend/src
         npm i 
-        npm run start
         npm test
