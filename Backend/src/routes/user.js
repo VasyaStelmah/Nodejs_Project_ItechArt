@@ -7,8 +7,9 @@ const router = express.Router();
 
 router.get(
   "/getAll",
-  admin,
   passport.authenticate("jwt", { session: false }),
+  admin,
+
   controller.getAll
 );
 router.get(
@@ -21,6 +22,7 @@ router.patch(
   "/:id",
   admin,
   passport.authenticate("jwt", { session: false }),
+  validate.create,
   controller.updateById
 );
 router.delete(
@@ -32,6 +34,7 @@ router.delete(
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
+  validate.create,
   controller.create
 );
 module.exports = router;

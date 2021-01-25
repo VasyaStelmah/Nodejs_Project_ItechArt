@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon server.js"
+    "start": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +20,7 @@
     "mongoose": "^5.11.11",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
+    "nodemailer": "^6.4.17",
     "passport": "*",
     "passport-jwt": "*",
     "sequelize": "^6.3.5"

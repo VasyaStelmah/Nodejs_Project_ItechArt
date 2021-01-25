@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const errorHandler = require("../errors/errorHandler");
 const Users = require("../models/users");
+const responseStatus = require("../helpers/responseStatus");
 
 module.exports.login = async function (request, response) {
   const candidate = await Users.findAll({
@@ -13,7 +14,6 @@ module.exports.login = async function (request, response) {
       candidate[0].password
     );
     if (passwordResult) {
-      // генерация токена
       const token = jwt.sign(
         {
           id: candidate[0].id,
@@ -27,6 +27,7 @@ module.exports.login = async function (request, response) {
       });
       response.status(200).json({
         token: `${token}`,
+        body: responseStatus.build(candidate, "succes", 200),
       });
     } else {
       response.status(401).json({
@@ -43,9 +44,9 @@ module.exports.register = async function (request, response) {
   const candidate = await Users.findAll({
     where: { email: request.body.email },
   });
-  if (candidate) {
+  if (candidate !== []) {
     response.status(409).json({
-      message: "This email already exists",
+      body: responseStatus.build(candidate, "This email already exists", 409),
     });
   } else {
     try {
@@ -58,7 +59,9 @@ module.exports.register = async function (request, response) {
         login: request.body.login,
         password: bcrypt.hashSync(password, hash),
       });
-      response.status(201).json(user);
+      response.status(201).json({
+        body: responseStatus.build(user, "User create", 201),
+      });
     } catch (e) {
       errorHandler(response, e);
     }
@@ -68,6 +71,6 @@ module.exports.logout = function (request, response) {
   request.logout();
   response.clearCookie("id_user");
   response.status(200).json({
-    message: "User logout successfully",
+    body: responseStatus.build(user, "User logout successfully", 200),
   });
 };

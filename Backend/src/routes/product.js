@@ -19,6 +19,7 @@ router.patch(
   "/:id",
   admin,
   passport.authenticate("jwt", { session: false }),
+  validate.create,
   controller.updateById
 );
 router.delete(
@@ -31,6 +32,7 @@ router.post(
   "/",
   admin,
   passport.authenticate("jwt", { session: false }),
+  validate.create,
   controller.create
 );
 

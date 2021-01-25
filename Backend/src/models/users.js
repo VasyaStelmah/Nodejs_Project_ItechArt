@@ -1,37 +1,39 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
-const sequelize = require('./connect');
-const Users = sequelize.define('users', {
-    // Model attributes are defined here
+const { Sequelize, DataTypes, Model } = require("sequelize");
+const sequelize = require("./connect");
+const Users = sequelize.define(
+  "users",
+  {
     id: {
-			allowNull: false,
-			autoIncrement: true,
-			primaryKey: true,
-			type: DataTypes.INTEGER
-		},
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER,
+    },
     last_name: {
       type: DataTypes.STRING(45),
-      allowNull: false
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING(45),
-      allowNull: false
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING(45),
-      allowNull: false
+      allowNull: false,
     },
     login: {
       type: DataTypes.STRING(45),
-      allowNull: false
+      allowNull: false,
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   },
   {
-    timestamps: false
-  });
-  console.log(Users === sequelize.models.users);
-  // Users.sync({ alter: true });
+    timestamps: false,
+  }
+);
+console.log(Users === sequelize.models.users);
+// Users.sync({ alter: true });
 module.exports = Users;
