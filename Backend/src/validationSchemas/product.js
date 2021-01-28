@@ -16,16 +16,3 @@ module.exports.create = function (request, response, next) {
     });
   }
 };
-module.exports.rating = function (request, response, next) {
-  const schema = Joi.object({
-    rating: Joi.number().min(1).max(5).required(),
-  });
-  const validation = schema.validate(request.body);
-  if (!validation.error) {
-    next();
-  } else {
-    response.status(400).json({
-      message: validation.error.details[0].message,
-    });
-  }
-};

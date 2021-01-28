@@ -37,9 +37,8 @@ router.post(
   controller.create
 );
 router.post(
-  "/rating/:id",
+  "/rating/:id/:number",
   passport.authenticate("jwt", { session: false }),
-  validate.rating,
   controller.rating
 );
 

@@ -5,37 +5,11 @@ const averageFunction = require("../middleware/averageMark");
 const Marks = require("../models/marks");
 const { Sequelize, DataTypes, Model } = require("sequelize");
 const sequelize = require("../models/connect");
+const Products = require("../models/products");
+const NotFound = require("../classes/errors/4xx/NotFound");
+
 module.exports.getAll = async function (request, response, next) {
   try {
-    // const getProductId = await Marks.findAll({
-    //   attributes: [
-    //     "product_id", // We had to list all attributes...
-    //     [sequelize.fn("COUNT", sequelize.col("product_id")), "count"], // To add the aggregation...
-    //   ],
-    //   where: { product_id: 7 },
-    // });
-    const getProductId = await Marks.findAll({
-      where: { product_id: 7 },
-    });
-    console.log(getProductId);
-    const count = JSON.parse(JSON.stringify(getProductId));
-    console.log(count);
-    function sumProduct() {
-      let sum = 0;
-      for (let i = 0; i < count.length; i++) {
-        sum += count[i].mark;
-      }
-      return sum;
-    }
-    function sumMarks() {
-      let sum = 0;
-      for (let i = 0; i < count.length; i++) {
-        sum += count[i].mark;
-      }
-      return sum;
-    }
-    console.log(sumMarks());
-
     const object = await productService.getAll();
     response.status(200).json({
       marks: responseStatus.build(getProductId, "Get marks", 200),
@@ -99,12 +73,63 @@ module.exports.create = async function (request, response, next) {
 };
 module.exports.rating = async function (request, response, next) {
   try {
-    let averageFunction = await averageMark(request.params.id);
-    const object = await productService.updateById(request.params.id, {
-      average_mark: averageFunction,
+    const getProduct = await Marks.findAll({
+      where: {
+        product_id: request.params.id,
+        user_id: request.cookies.id_user,
+      },
     });
-    response.status(201).json({
-      body: responseStatus.build(object, "Create product", 201),
+    if (getProduct) {
+      const markUpdate = await Marks.update(
+        {
+          product_id: request.params.id,
+          user_id: request.cookies.id_user,
+          mark: request.params.number,
+        },
+        {
+          where: {
+            product_id: request.params.id,
+            user_id: request.cookies.id_user,
+          },
+        }
+      );
+    }
+    if (Object.keys(getProduct).length == 0) {
+      const markCreate = await Marks.create({
+        product_id: request.params.id,
+        user_id: request.cookies.id_user,
+        mark: request.params.number,
+      });
+    }
+    const getAllMarks = await Marks.findAll({
+      attributes: ["product_id", "user_id", "mark"],
+      where: {
+        product_id: request.params.id,
+      },
+    });
+    const getAllMarksArray = JSON.parse(JSON.stringify(getAllMarks));
+    function sumMarks() {
+      let sum = 0;
+      for (let i = 0; i < getAllMarksArray.length; i++) {
+        sum += getAllMarksArray[i].mark;
+      }
+      return ((sum + 0.01) / getAllMarksArray.length).toFixed(1);
+    }
+    const updateAverageMark = await Products.update(
+      {
+        average_mark: sumMarks(),
+      },
+      { where: { id: request.params.id } }
+    );
+    if (updateAverageMark == 0) {
+      throw new NotFound(`Product id=${request.params.id} is not found`);
+    }
+    response.status(200).json({
+      body: responseStatus.build(
+        updateAverageMark,
+        `Update rating product id ${request.params.id}`,
+        201
+      ),
     });
   } catch (error) {
     errorHandler(response, error);
