@@ -1,5 +1,6 @@
 const productRepository = require("../repositories/product");
-const errorMessage = require("../errors/error");
+const NotFound = require("../classes/errors/4xx/NotFound");
+const UnprocessableEntity = require("../classes/errors/4xx/unprocessableEntity");
 
 module.exports.getAll = async function () {
   return await productRepository.getAll();
@@ -9,7 +10,7 @@ module.exports.getById = async function (id) {
     where: { id: id },
   });
   if (!product) {
-    throw new errorMessage("Product is not found", 404);
+    throw new NotFound("Product is not found");
   }
   return product;
 };
@@ -18,15 +19,15 @@ module.exports.updateById = async function (id, object) {
     where: { description: object.description },
   });
   if (description) {
-    throw new errorMessage("Description already in use", 422);
+    throw new UnprocessableEntity("Description already in use");
   }
   const name = await productRepository.get({ where: { name: object.name } });
   if (name) {
-    throw new errorMessage("Name already in use", 422);
+    throw new UnprocessableEntity("Name already in use");
   }
   const user = await productRepository.getById({ where: { id: id } });
   if (!user) {
-    throw new errorMessage("User is not found", 404);
+    throw new NotFound("Product is not found");
   }
   return await productRepository.updateById(id, object);
 };
@@ -35,25 +36,25 @@ module.exports.removeById = async function (id) {
     where: { id: id },
   });
   if (!user) {
-    throw new errorMessage("Product is not found", 404);
+    throw new NotFound("Product is not found");
   }
   return user;
 };
 module.exports.create = async function (id) {
   const name = await productRepository.get({ where: { name: object.name } });
   if (name) {
-    throw new errorMessage("Name already in use", 422);
+    throw new UnprocessableEntity("Name already in use");
   }
   const description = await productRepository.get({
     where: { description: object.description },
   });
   if (description) {
-    throw new errorMessage("Description already in use", 422);
+    throw new UnprocessableEntity("Description already in use");
   }
 
   const user = await productRepository.getById({ where: { id: id } });
   if (!user) {
-    throw new errorMessage("User is not found", 404);
+    throw new NotFound("Product is not found");
   }
   return await productRepository.create(object);
 };
@@ -62,7 +63,7 @@ module.exports.getSortAscName = async function (id) {
     order: [["name", "ASC"]],
   });
   if (!user) {
-    throw new errorMessage("Product is not found", 404);
+    throw new NotFound("Product is not found");
   }
   return user;
 };
@@ -71,7 +72,7 @@ module.exports.getSortDescName = async function (id) {
     order: [["name", "DESC"]],
   });
   if (!user) {
-    throw new errorMessage("Product is not found", 404);
+    throw new NotFound("Product is not found");
   }
   return user;
 };
@@ -80,7 +81,7 @@ module.exports.getSortAscPrice = async function (id) {
     order: [["price", "ASC"]],
   });
   if (!user) {
-    throw new errorMessage("Product is not found", 404);
+    throw new NotFound("Product is not found");
   }
   return user;
 };
@@ -89,7 +90,7 @@ module.exports.getSortDescPrice = async function (id) {
     order: [["price", "ASC"]],
   });
   if (!user) {
-    throw new errorMessage("Product is not found", 404);
+    throw new NotFound("Product is not found");
   }
   return user;
 };

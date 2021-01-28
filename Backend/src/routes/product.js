@@ -4,6 +4,7 @@ const admin = require("../middleware/admin");
 const passport = require("passport");
 const controller = require("../controllers/product");
 const validate = require("../validationSchemas/product");
+const { request, response } = require("express");
 
 router.get(
   "/",
@@ -34,6 +35,12 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   validate.create,
   controller.create
+);
+router.post(
+  "/rating/:id",
+  passport.authenticate("jwt", { session: false }),
+  validate.rating,
+  controller.rating
 );
 
 router.get(
