@@ -25,6 +25,7 @@ module.exports.login = async function (request, response) {
       response.cookie("id_user", candidate[0].id, {
         maxAge: 3600 * 24,
       });
+      console.log(responseStatus.build(candidate, "succes", 200));
       response.status(200).json({
         token: `${token}`,
         body: responseStatus.build(candidate, "succes", 200),
@@ -45,9 +46,9 @@ module.exports.register = async function (request, response) {
     where: { email: request.body.email },
   });
   if (candidate !== []) {
-    response.status(409).json({
-      body: responseStatus.build(candidate, "This email already exists", 409),
-    });
+    response
+      .status(409)
+      .json(responseStatus.build(candidate, "This email already exists", 409));
   } else {
     try {
       const hash = bcrypt.genSaltSync(3);
@@ -59,9 +60,7 @@ module.exports.register = async function (request, response) {
         login: request.body.login,
         password: bcrypt.hashSync(password, hash),
       });
-      response.status(201).json({
-        body: responseStatus.build(user, "User create", 201),
-      });
+      response.status(201).json(responseStatus.build(user, "User create", 201));
     } catch (e) {
       errorHandler(response, e);
     }
@@ -70,7 +69,7 @@ module.exports.register = async function (request, response) {
 module.exports.logout = function (request, response) {
   request.logout();
   response.clearCookie("id_user");
-  response.status(200).json({
-    body: responseStatus.build(user, "User logout successfully", 200),
-  });
+  response
+    .status(200)
+    .json(responseStatus.build(user, "User logout successfully", 200));
 };

@@ -1,9 +1,19 @@
 const productRepository = require("../repositories/product");
 const NotFound = require("../classes/errors/4xx/NotFound");
 const UnprocessableEntity = require("../classes/errors/4xx/unprocessableEntity");
+const { Op } = require("sequelize");
 
 module.exports.getAll = async function () {
   return await productRepository.getAll();
+};
+module.exports.getOnlyWithImage = async function () {
+  return await productRepository.get({
+    where: {
+      image: {
+        [Op.not]: "",
+      },
+    },
+  });
 };
 module.exports.getById = async function (id) {
   const product = await productRepository.getById({
@@ -58,37 +68,8 @@ module.exports.create = async function (id) {
   }
   return await productRepository.create(object);
 };
-module.exports.getSortAscName = async function (id) {
-  const user = await productRepository.sort({
-    order: [["name", "ASC"]],
-  });
-  if (!user) {
-    throw new NotFound("Product is not found");
-  }
-  return user;
-};
-module.exports.getSortDescName = async function (id) {
-  const user = await productRepository.sort({
-    order: [["name", "DESC"]],
-  });
-  if (!user) {
-    throw new NotFound("Product is not found");
-  }
-  return user;
-};
-module.exports.getSortAscPrice = async function (id) {
-  const user = await productRepository.sort({
-    order: [["price", "ASC"]],
-  });
-  if (!user) {
-    throw new NotFound("Product is not found");
-  }
-  return user;
-};
-module.exports.getSortDescPrice = async function (id) {
-  const user = await productRepository.sort({
-    order: [["price", "ASC"]],
-  });
+module.exports.sort = async function (object) {
+  const user = await productRepository.sort(object);
   if (!user) {
     throw new NotFound("Product is not found");
   }

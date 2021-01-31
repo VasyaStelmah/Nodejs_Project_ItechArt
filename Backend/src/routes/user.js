@@ -9,7 +9,6 @@ router.get(
   "/getAll",
   passport.authenticate("jwt", { session: false }),
   admin,
-
   controller.getAll
 );
 router.get(

@@ -12,6 +12,16 @@ router.get(
   controller.getAll
 );
 router.get(
+  "/filter/",
+  passport.authenticate("jwt", { session: false }),
+  controller.filter
+);
+router.get(
+  "/sort",
+  passport.authenticate("jwt", { session: false }),
+  controller.sort
+);
+router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   controller.getById
@@ -41,25 +51,5 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   controller.rating
 );
-
-router.get(
-  "/sortAscName",
-  passport.authenticate("jwt", { session: false }),
-  controller.getSortAscName
-);
-router.get(
-  "/sortDescName",
-  passport.authenticate("jwt", { session: false }),
-  controller.getSortDescName
-);
-router.get(
-  "/sortAscPrice",
-  passport.authenticate("jwt", { session: false }),
-  controller.getSortAscPrice
-);
-router.get(
-  "/sortDescPrice",
-  passport.authenticate("jwt", { session: false }),
-  controller.getSortDescPrice
-);
 module.exports = router;
+// AscName;

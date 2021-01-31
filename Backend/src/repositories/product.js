@@ -1,5 +1,4 @@
 const Products = require("../models/products");
-
 module.exports.getAll = async function () {
   return await Products.findAll();
 };

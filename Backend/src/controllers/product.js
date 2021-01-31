@@ -1,7 +1,6 @@
 const errorHandler = require("../errors/errorHandler");
 const productService = require("../services/product");
 const responseStatus = require("../helpers/responseStatus");
-const averageFunction = require("../middleware/averageMark");
 const Marks = require("../models/marks");
 const { Sequelize, DataTypes, Model } = require("sequelize");
 const sequelize = require("../models/connect");
@@ -11,10 +10,9 @@ const NotFound = require("../classes/errors/4xx/NotFound");
 module.exports.getAll = async function (request, response, next) {
   try {
     const object = await productService.getAll();
-    response.status(200).json({
-      marks: responseStatus.build(getProductId, "Get marks", 200),
-      body: responseStatus.build(object, "Get all products", 200),
-    });
+    response
+      .status(200)
+      .json(responseStatus.build(object, "Get all products", 200));
   } catch (error) {
     errorHandler(response, error);
   }
@@ -22,9 +20,9 @@ module.exports.getAll = async function (request, response, next) {
 module.exports.getById = async function (request, response, next) {
   try {
     const object = await productService.getById(request.params.id);
-    response.status(200).json({
-      body: responseStatus.build(object, "Get by id product", 200),
-    });
+    response
+      .status(200)
+      .json(responseStatus.build(object, "Get by id product", 200));
   } catch (error) {
     errorHandler(response, error);
   }
@@ -32,9 +30,9 @@ module.exports.getById = async function (request, response, next) {
 module.exports.removeById = async function (request, response, next) {
   try {
     const object = await productService.removeById(request.params.id);
-    response.status(200).json({
-      body: responseStatus.build(object, "Delete by id product", 200),
-    });
+    response
+      .status(200)
+      .json(responseStatus.build(object, "Delete by id product", 200));
   } catch (error) {
     errorHandler(response, error);
   }
@@ -48,9 +46,9 @@ module.exports.updateById = async function (request, response, next) {
       image: request.body.image,
       quantity: request.body.quantity,
     });
-    response.status(200).json({
-      body: responseStatus.build(object, "Update by id product", 200),
-    });
+    response
+      .status(200)
+      .json(responseStatus.build(object, "Update by id product", 200));
   } catch (error) {
     errorHandler(response, error);
   }
@@ -64,9 +62,9 @@ module.exports.create = async function (request, response, next) {
       image: request.body.image,
       quantity: request.body.quantity,
     });
-    response.status(201).json({
-      body: responseStatus.build(object, "Create product", 201),
-    });
+    response
+      .status(201)
+      .json(responseStatus.build(object, "Create product", 201));
   } catch (error) {
     errorHandler(response, error);
   }
@@ -124,53 +122,71 @@ module.exports.rating = async function (request, response, next) {
     if (updateAverageMark == 0) {
       throw new NotFound(`Product id=${request.params.id} is not found`);
     }
-    response.status(200).json({
-      body: responseStatus.build(
-        updateAverageMark,
-        `Update rating product id ${request.params.id}`,
-        201
-      ),
-    });
+    const object = await productService.getAll();
+    response
+      .status(200)
+      .json(
+        responseStatus.build(
+          object,
+          `Update rating product id ${request.params.id}`,
+          201
+        )
+      );
   } catch (error) {
     errorHandler(response, error);
   }
 };
-module.exports.getSortAscName = async function (request, response, next) {
+module.exports.sort = async function (request, response, next) {
   try {
-    const object = await productService.getSortAscName();
-    response.status(200).json({
-      body: responseStatus.build(object, "Sort by Asc name product", 200),
-    });
+    function deepEqual(obj1, obj2) {
+      return JSON.stringify(obj1) === JSON.stringify(obj2);
+    }
+    if (deepEqual({ sort: "ascName" }, request.query)) {
+      const object = await productService.sort({
+        order: [["name", "ASC"]],
+      });
+      response
+        .status(200)
+        .json(responseStatus.build(object, "Sort by Asc name product", 200));
+    }
+    if (deepEqual({ sort: "descName" }, request.query)) {
+      const object = await productService.sort({
+        order: [["name", "DESC"]],
+      });
+      response
+        .status(200)
+        .json(responseStatus.build(object, "Sort by Desc name product", 200));
+    }
+    if (deepEqual({ sort: "ascPrice" }, request.query)) {
+      const object = await productService.sort({
+        order: [["price", "ASC"]],
+      });
+      response
+        .status(200)
+        .json(responseStatus.build(object, "Sort by Asc price product", 200));
+    }
+    if (deepEqual({ sort: "descPrice" }, request.query)) {
+      const object = await productService.sort({
+        order: [["price", "ASC"]],
+      });
+      response
+        .status(200)
+        .json(responseStatus.build(object, "Sort by Desc price product", 200));
+    }
   } catch (error) {
     errorHandler(response, error);
   }
 };
-module.exports.getSortDescName = async function (request, response, next) {
+module.exports.filter = async function (request, response, next) {
   try {
-    const object = await productService.getSortDescName();
-    response.status(200).json({
-      body: responseStatus.build(object, "Sort by Desc name product", 200),
-    });
-  } catch (error) {
-    errorHandler(response, error);
-  }
-};
-module.exports.getSortAscPrice = async function (request, response, next) {
-  try {
-    const object = await productService.getSortAscPrice();
-    response.status(200).json({
-      body: responseStatus.build(object, "Sort by Asc price product", 200),
-    });
-  } catch (error) {
-    errorHandler(response, error);
-  }
-};
-module.exports.getSortDescPrice = async function (request, response, next) {
-  try {
-    const object = await productService.getSortDescPrice();
-    response.status(200).json({
-      body: responseStatus.build(object, "Sort by Desc price product", 200),
-    });
+    if ((request.query = { only: "withImage" })) {
+      console.log(request.query);
+      const object = await productService.getOnlyWithImage();
+      console.log(object);
+      response
+        .status(200)
+        .json(responseStatus.build(object, "Get all products", 200));
+    }
   } catch (error) {
     errorHandler(response, error);
   }
