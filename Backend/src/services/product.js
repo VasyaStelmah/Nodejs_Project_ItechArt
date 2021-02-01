@@ -75,3 +75,28 @@ module.exports.sort = async function (object) {
   }
   return user;
 };
+module.exports.getByNameTag = async function (name) {
+  const nameTag = await productRepository.getByNameTag(name);
+  if (!nameTag) {
+    throw new NotFound("Name tag is not found");
+  }
+  return user;
+};
+module.exports.updateByIdTag = async function (id, object) {
+  const tag = await productRepository.updateByIdTag(id, object);
+  if (!tag) {
+    throw new NotFound("Tag is not found");
+  }
+  return user;
+};
+module.exports.createTag = async function (object) {
+  const tag = await productRepository.createTag(object);
+  return tag;
+};
+module.exports.removeByIdTag = async function (id) {
+  const tag = await productRepository.removeByIdTag(id);
+  if (!tag) {
+    throw new NotFound("Tag for deleting is not found");
+  }
+  return tag;
+};

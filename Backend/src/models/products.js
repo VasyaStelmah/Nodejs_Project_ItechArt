@@ -32,6 +32,6 @@ const Products = sequelize.define("products", {
     allowNull: true,
   },
 });
-console.log(Products === sequelize.models.products);
+// console.log(Products === sequelize.models.products);
 // Products.sync({ alter: true });
 module.exports = Products;

@@ -12,7 +12,7 @@ router.get(
   controller.getAll
 );
 router.get(
-  "/filter/",
+  "/filter",
   passport.authenticate("jwt", { session: false }),
   controller.filter
 );
@@ -51,5 +51,29 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   controller.rating
 );
+router.get(
+  "/tag/:name",
+  admin,
+  passport.authenticate("jwt", { session: false }),
+  controller.getByNameTag
+);
+router.post(
+  "/tag/:id",
+  admin,
+  passport.authenticate("jwt", { session: false }),
+  controller.updateByIdTag
+);
+router.post(
+  "/tag",
+  admin,
+  passport.authenticate("jwt", { session: false }),
+  controller.createTag
+);
+router.delete(
+  "/tag/:id",
+  admin,
+  passport.authenticate("jwt", { session: false }),
+  controller.removeByIdTag
+);
+
 module.exports = router;
-// AscName;

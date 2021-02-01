@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes, Model } = require("sequelize");
 const sequelize = require("./connect");
-const Marks = sequelize.define(
-  "marks",
+const Tags = sequelize.define(
+  "tags",
   {
     id: {
       allowNull: false,
@@ -9,15 +9,11 @@ const Marks = sequelize.define(
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
+    name: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+    },
     product_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    mark: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -26,6 +22,7 @@ const Marks = sequelize.define(
     timestamps: false,
   }
 );
-// console.log(Marks === sequelize.models.marks);
-//   Marks.sync({ alter: true });
-module.exports = Marks;
+// console.log(Tags === sequelize.models.tags);
+// console.log("Tags");
+// Tags.sync({ alter: true });
+module.exports = Tags;

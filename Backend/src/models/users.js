@@ -34,6 +34,6 @@ const Users = sequelize.define(
     timestamps: false,
   }
 );
-console.log(Users === sequelize.models.users);
+// console.log(Users === sequelize.models.users);
 // Users.sync({ alter: true });
 module.exports = Users;

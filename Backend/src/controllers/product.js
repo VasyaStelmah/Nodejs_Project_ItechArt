@@ -6,6 +6,7 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 const sequelize = require("../models/connect");
 const Products = require("../models/products");
 const NotFound = require("../classes/errors/4xx/NotFound");
+const Tags = require("../models/tags");
 
 module.exports.getAll = async function (request, response, next) {
   try {
@@ -187,6 +188,65 @@ module.exports.filter = async function (request, response, next) {
         .status(200)
         .json(responseStatus.build(object, "Get all products", 200));
     }
+  } catch (error) {
+    errorHandler(response, error);
+  }
+};
+module.exports.getByNameTag = async function (request, response, next) {
+  try {
+    const object = await productService.getByNameTag(request.body.name);
+    response
+      .status(200)
+      .json(responseStatus.build(object, "Get all products", 200));
+  } catch (error) {
+    errorHandler(response, error);
+  }
+};
+module.exports.updateByIdTag = async function (request, response, next) {
+  try {
+    const object = await productService.updateByIdTag(request.body.id, {
+      name: request.body.name,
+      product_id: request.body.prosuct_id,
+    });
+    console.log(object);
+    response
+      .status(200)
+      .json(
+        responseStatus.build(object, `Update tag id=${request.body.id}`, 200)
+      );
+  } catch (error) {
+    errorHandler(response, error);
+  }
+};
+module.exports.createTag = async function (request, response, next) {
+  try {
+    const object = await productService.createTag(
+      request.body.name,
+      request.body.product_id
+    );
+    console.log(object);
+    response
+      .status(200)
+      .json(
+        responseStatus.build(
+          object,
+          `Create tag name=${request.body.name} and product-id=${request.body.product_id}`,
+          201
+        )
+      );
+  } catch (error) {
+    errorHandler(response, error);
+  }
+};
+module.exports.removeByIdTag = async function (request, response, next) {
+  try {
+    const object = await productService.removeByIdTag(request.body.id);
+    console.log(object);
+    response
+      .status(200)
+      .json(
+        responseStatus.build(object, `Remove tag id=${request.body.id}`, 200)
+      );
   } catch (error) {
     errorHandler(response, error);
   }

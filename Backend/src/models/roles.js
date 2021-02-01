@@ -26,6 +26,6 @@ const Roles = sequelize.define(
     timestamps: false,
   }
 );
-console.log(Roles === sequelize.models.roles);
+// console.log(Roles === sequelize.models.roles);
 // Roles.sync({ alter: true });
 module.exports = Roles;
